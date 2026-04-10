@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.macro.mall</groupId>
+    <parent>
+        <groupId>com.project</groupId>
+        <artifactId>mall-system</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <artifactId>mall-portal</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>mall-portal</name>
-    <description>mall-portal project for mall</description>
-
-    <parent>
-        <groupId>com.macro.mall</groupId>
-        <artifactId>mall</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+    <description>mall portal module</description>
 
     <dependencies>
         <dependency>
-            <groupId>com.macro.mall</groupId>
+            <groupId>com.project</groupId>
             <artifactId>mall-mbg</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.macro.mall</groupId>
+            <groupId>com.project</groupId>
             <artifactId>mall-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!--mongodb依赖配置-->
         <dependency>
@@ -47,6 +54,21 @@
             <artifactId>alipay-sdk-java</artifactId>
             <version>${alipay-sdk.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.project</groupId>
+            <artifactId>mall-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+            <version>${swagger-annotations-jakarta.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -55,10 +77,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
