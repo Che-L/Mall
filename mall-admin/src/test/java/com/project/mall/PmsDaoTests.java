@@ -5,6 +5,7 @@ import com.project.mall.dao.PmsMemberPriceDao;
 import com.project.mall.dao.PmsProductDao;
 import com.project.mall.dto.PmsProductResult;
 import com.project.mall.model.PmsMemberPrice;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Tag("integration")
 @SpringBootTest
 public class PmsDaoTests {
     @Autowired
