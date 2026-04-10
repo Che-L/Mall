@@ -1,17 +1,17 @@
-package com.macro.mall.security.config;
+package com.project.mall.security.config;
 
-import com.macro.mall.security.component.*;
-import com.macro.mall.security.util.JwtTokenUtil;
+import com.project.mall.security.component.*;
+import com.project.mall.security.util.JwtTokenUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
- * SpringSecurity通用配置
- * 包括通用Bean、Security通用Bean及动态权限通用Bean
- * Created by macro on 2022/5/20.
+ * Spring Security 通用配置。
+ * 包括通用 Bean、Security 通用 Bean 及动态权限相关 Bean。
  */
 @Configuration
 public class CommonSecurityConfig {
@@ -22,6 +22,7 @@ public class CommonSecurityConfig {
     }
 
     @Bean
+    @ConfigurationProperties(prefix = "secure.ignored")
     public IgnoreUrlsConfig ignoreUrlsConfig() {
         return new IgnoreUrlsConfig();
     }

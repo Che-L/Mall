@@ -1,6 +1,6 @@
-package com.macro.mall.security.aspect;
+package com.project.mall.security.aspect;
 
-import com.macro.mall.security.annotation.CacheException;
+import com.project.mall.security.annotation.CacheException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 
 /**
- * Redis缓存切面，防止Redis宕机影响正常业务逻辑
- * Created by macro on 2020/3/17.
+ * Redis 缓存切面：缓存异常时默认吞掉并打日志，避免拖垮主流程；
+ * 标有 {@link CacheException} 的方法则继续抛出。
  */
 @Aspect
 @Component
@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 public class RedisCacheAspect {
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisCacheAspect.class);
 
-    @Pointcut("execution(public * com.macro.mall.portal.service.*CacheService.*(..)) || execution(public * com.macro.mall.service.*CacheService.*(..))")
+    @Pointcut("execution(public * com.project.mall.portal.service.*CacheService.*(..)) || execution(public * com.project.mall.service.*CacheService.*(..))")
     public void cacheAspect() {
     }
 
@@ -37,7 +37,6 @@ public class RedisCacheAspect {
         try {
             result = joinPoint.proceed();
         } catch (Throwable throwable) {
-            //有CacheException注解的方法需要抛出异常
             if (method.isAnnotationPresent(CacheException.class)) {
                 throw throwable;
             } else {

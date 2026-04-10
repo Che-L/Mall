@@ -1,4 +1,4 @@
-package com.macro.mall.security.util;
+package com.project.mall.security.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -6,15 +6,14 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
- * Spring工具类
- * Created by macro on 2020/3/3.
+ * Spring 上下文工具类。
  */
 @Component
 public class SpringUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
-    // 获取applicationContext
+    /** 获取 {@link ApplicationContext} */
     public static ApplicationContext getApplicationContext() {
         return applicationContext;
     }
@@ -26,17 +25,17 @@ public class SpringUtil implements ApplicationContextAware {
         }
     }
 
-    // 通过name获取Bean
+    /** 按 bean 名称获取 */
     public static Object getBean(String name) {
         return getApplicationContext().getBean(name);
     }
 
-    // 通过class获取Bean
+    /** 按类型获取 */
     public static <T> T getBean(Class<T> clazz) {
         return getApplicationContext().getBean(clazz);
     }
 
-    // 通过name,以及Clazz返回指定的Bean
+    /** 按名称与类型获取 */
     public static <T> T getBean(String name, Class<T> clazz) {
         return getApplicationContext().getBean(name, clazz);
     }

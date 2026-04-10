@@ -1,4 +1,4 @@
-package com.macro.mall.security.component;
+package com.project.mall.security.component;
 
 import cn.hutool.core.collection.CollUtil;
 import org.springframework.security.access.AccessDecisionManager;
@@ -12,22 +12,19 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * 动态权限决策管理器，用于判断用户是否有访问权限
- * Created by macro on 2020/2/7.
+ * 动态权限访问决策：比对用户权限与接口所需权限。
  */
 public class DynamicAccessDecisionManager implements AccessDecisionManager {
 
     @Override
     public void decide(Authentication authentication, Object object,
                        Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
-        // 当接口未被配置资源时直接放行
         if (CollUtil.isEmpty(configAttributes)) {
             return;
         }
         Iterator<ConfigAttribute> iterator = configAttributes.iterator();
         while (iterator.hasNext()) {
             ConfigAttribute configAttribute = iterator.next();
-            //将访问所需资源或用户拥有资源进行比对
             String needAuthority = configAttribute.getAttribute();
             for (GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
                 if (needAuthority.trim().equals(grantedAuthority.getAuthority())) {

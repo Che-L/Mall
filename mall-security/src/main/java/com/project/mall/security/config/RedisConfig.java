@@ -1,12 +1,11 @@
-package com.macro.mall.security.config;
+package com.project.mall.security.config;
 
-import com.macro.mall.common.config.BaseRedisConfig;
+import com.project.mall.common.config.BaseRedisConfig;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Redis配置类
- * Created by macro on 2020/3/2.
+ * Redis 配置（继承公共 {@link BaseRedisConfig}）。
  */
 @EnableCaching
 @Configuration

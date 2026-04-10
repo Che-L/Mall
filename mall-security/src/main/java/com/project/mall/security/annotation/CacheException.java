@@ -1,10 +1,9 @@
-package com.macro.mall.security.annotation;
+package com.project.mall.security.annotation;
 
 import java.lang.annotation.*;
 
 /**
- * 自定义缓存异常注解，有该注解的缓存方法会抛出异常
- * Created by macro on 2020/3/17.
+ * 标在缓存方法上：Redis 等异常时向调用方抛出，而不是被切面吞掉。
  */
 @Documented
 @Target(ElementType.METHOD)
