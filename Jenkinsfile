@@ -22,7 +22,7 @@ pipeline {
 
     parameters {
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: '为 true 时跳过测试（CI 无 MySQL/ES 等时可勾选）')
-        booleanParam(name: 'BUILD_DOCKER_IMAGES', defaultValue: false, description: '为 true 时执行 docker compose build（节点需已安装 Docker 与 Compose 插件）')
+        booleanParam(name: 'BUILD_DOCKER_IMAGES', defaultValue: true, description: '为 true 时执行 docker compose build（节点需已安装 Docker 与 Compose 插件）')
     }
 
     stages {
