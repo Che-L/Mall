@@ -1,9 +1,9 @@
-package com.macro.mall.demo.controller;
+package com.project.mall.demo.controller;
 
-import com.macro.mall.common.api.CommonResult;
-import com.macro.mall.model.PmsBrand;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.project.mall.common.api.CommonResult;
+import com.project.mall.model.PmsBrand;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -22,10 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * RestTemplate示例Controller
- * Created by macro on 2018/9/17.
+ * RestTemplate 示例 Controller
  */
-@Api(tags = "RestTemplateDemoController", description = "RestTemplate示例")
+@Tag(name = "RestTemplateDemoController", description = "RestTemplate 示例")
 @Controller
 @RequestMapping("/template")
 public class RestTemplateDemoController {
@@ -34,7 +33,7 @@ public class RestTemplateDemoController {
     @Value("${host.mall.admin}")
     private String HOST_MALL_ADMIN;
 
-    @ApiOperation("getForEntity url")
+    @Operation(summary = "getForEntity url")
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Object getForEntity(@PathVariable Long id) {
@@ -43,7 +42,7 @@ public class RestTemplateDemoController {
         return responseEntity.getBody();
     }
 
-    @ApiOperation("getForEntity params")
+    @Operation(summary = "getForEntity params")
     @RequestMapping(value = "/get2/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Object getForEntity2(@PathVariable Long id) {
@@ -54,7 +53,7 @@ public class RestTemplateDemoController {
         return responseEntity.getBody();
     }
 
-    @ApiOperation("getForEntity Uri")
+    @Operation(summary = "getForEntity Uri")
     @RequestMapping(value = "/get3/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Object getForEntity3(@PathVariable Long id) {
@@ -64,16 +63,15 @@ public class RestTemplateDemoController {
         return responseEntity.getBody();
     }
 
-    @ApiOperation("getForObject url")
+    @Operation(summary = "getForObject url")
     @RequestMapping(value = "/get4/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Object getForObject(@PathVariable Long id) {
         String url = HOST_MALL_ADMIN + "/brand/{id}";
-        CommonResult commonResult = restTemplate.getForObject(url, CommonResult.class, id);
-        return commonResult;
+        return restTemplate.getForObject(url, CommonResult.class, id);
     }
 
-    @ApiOperation("postForEntity jsonBody")
+    @Operation(summary = "postForEntity jsonBody")
     @RequestMapping(value = "/post", method = RequestMethod.POST)
     @ResponseBody
     public Object postForEntity(@RequestBody PmsBrand brand) {
@@ -82,25 +80,22 @@ public class RestTemplateDemoController {
         return responseEntity.getBody();
     }
 
-    @ApiOperation("postForEntity jsonBody")
+    @Operation(summary = "postForObject jsonBody")
     @RequestMapping(value = "/post2", method = RequestMethod.POST)
     @ResponseBody
     public Object postForObject(@RequestBody PmsBrand brand) {
         String url = HOST_MALL_ADMIN + "/brand/create";
-        CommonResult commonResult = restTemplate.postForObject(url, brand, CommonResult.class);
-        return commonResult;
+        return restTemplate.postForObject(url, brand, CommonResult.class);
     }
 
-    @ApiOperation("postForEntity form")
+    @Operation(summary = "postForEntity form")
     @RequestMapping(value = "/post3", method = RequestMethod.POST)
     @ResponseBody
     public Object postForEntity3(@RequestParam String name) {
         String url = HOST_MALL_ADMIN + "/productAttribute/category/create";
-        //设置头信息
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        //构造表单参数
-        MultiValueMap<String, String> params= new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("name", name);
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
         ResponseEntity<CommonResult> responseEntity = restTemplate.postForEntity(url, requestEntity, CommonResult.class);

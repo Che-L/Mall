@@ -1,0 +1,26 @@
+package com.project.mall.portal.domain;
+
+import com.project.mall.model.SmsCoupon;
+import com.project.mall.model.SmsCouponHistory;
+import com.project.mall.model.SmsCouponProductCategoryRelation;
+import com.project.mall.model.SmsCouponProductRelation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+/**
+ * 优惠券领取历史详情（包括优惠券信息和关联关系）
+ * Created by macro on 2018/8/29.
+ */
+@Getter
+@Setter
+public class SmsCouponHistoryDetail extends SmsCouponHistory {
+    @Schema(description = "相关优惠券信息")
+    private SmsCoupon coupon;
+    @Schema(description = "优惠券关联商品")
+    private List<SmsCouponProductRelation> productRelationList;
+    @Schema(description = "优惠券关联商品分类")
+    private List<SmsCouponProductCategoryRelation> categoryRelationList;
+}

@@ -1,0 +1,32 @@
+package com.project.mall.portal.domain;
+
+import com.project.mall.model.CmsSubject;
+import com.project.mall.model.PmsBrand;
+import com.project.mall.model.PmsProduct;
+import com.project.mall.model.SmsHomeAdvertise;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+/**
+ * 首页内容返回信息封装
+ * Created by macro on 2019/1/28.
+ */
+@Getter
+@Setter
+public class HomeContentResult {
+    @Schema(description = "轮播广告")
+    private List<SmsHomeAdvertise> advertiseList;
+    @Schema(description = "推荐品牌")
+    private List<PmsBrand> brandList;
+    @Schema(description = "当前秒杀场次")
+    private HomeFlashPromotion homeFlashPromotion;
+    @Schema(description = "新品推荐")
+    private List<PmsProduct> newProductList;
+    @Schema(description = "人气推荐")
+    private List<PmsProduct> hotProductList;
+    @Schema(description = "推荐专题")
+    private List<CmsSubject> subjectList;
+}

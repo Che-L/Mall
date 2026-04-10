@@ -1,4 +1,4 @@
-package com.macro.mall.demo.config;
+package com.project.mall.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

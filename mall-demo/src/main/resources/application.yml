@@ -5,15 +5,16 @@ spring:
   application:
     name: mall-demo
   datasource:
-    url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: root
   thymeleaf:
-    mode: HTML5
+    mode: HTML
     encoding: utf-8
     servlet:
       content-type: text/html
-    cache: false #开发时关闭缓存,不然没法看到实时页面
+    cache: false # 开发时关闭缓存
+    check-template-location: false # 无 classpath:/templates 时避免启动告警
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -26,7 +27,7 @@ mybatis:
 logging:
   level:
     root: info
-    com.macro.mall: debug
+    com.project.mall: debug
 
 host:
   mall:

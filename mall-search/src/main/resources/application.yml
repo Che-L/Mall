@@ -2,7 +2,7 @@ spring:
   application:
     name: mall-search
   profiles:
-    active: dev #默认为开发环境
+    active: dev
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -15,5 +15,8 @@ mybatis:
     - classpath:dao/*.xml
     - classpath*:com/**/mapper/*.xml
 
-
-
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

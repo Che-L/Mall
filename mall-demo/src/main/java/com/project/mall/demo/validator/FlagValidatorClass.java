@@ -1,13 +1,14 @@
-package com.macro.mall.demo.validator;
+package com.project.mall.demo.validator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * 状态标记校验器
  */
-public class FlagValidatorClass implements ConstraintValidator<FlagValidator,Integer> {
+public class FlagValidatorClass implements ConstraintValidator<FlagValidator, Integer> {
     private String[] values;
+
     @Override
     public void initialize(FlagValidator flagValidator) {
         this.values = flagValidator.value();
@@ -15,13 +16,14 @@ public class FlagValidatorClass implements ConstraintValidator<FlagValidator,Int
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext constraintValidatorContext) {
-        boolean isValid = false;
-        for(int i=0;i<values.length;i++){
-            if(values[i].equals(String.valueOf(value))){
-                isValid = true;
-                break;
+        if (value == null) {
+            return true;
+        }
+        for (String v : values) {
+            if (v.equals(String.valueOf(value))) {
+                return true;
             }
         }
-        return isValid;
+        return false;
     }
 }

@@ -1,7 +1,7 @@
-package com.macro.mall.demo.service;
+package com.project.mall.demo.service;
 
-import com.macro.mall.demo.dto.PmsBrandDto;
-import com.macro.mall.model.PmsBrand;
+import com.project.mall.demo.dto.PmsBrandDto;
+import com.project.mall.model.PmsBrand;
 
 import java.util.List;
 

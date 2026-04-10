@@ -1,4 +1,4 @@
-package com.macro.mall.demo.config;
+package com.project.mall.demo.config;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * Created by macro on 2018/4/26.
  */
 @Configuration
-@MapperScan("com.macro.mall.mapper")
+@MapperScan("com.project.mall.mapper")
 public class MyBatisConfig {
 }

@@ -1,4 +1,4 @@
-package com.macro.mall.demo;
+package com.project.mall.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

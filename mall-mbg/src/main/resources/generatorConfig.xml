@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE generatorConfiguration
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
@@ -6,44 +6,44 @@
 <generatorConfiguration>
     <properties resource="generator.properties"/>
     <context id="MySqlContext" targetRuntime="MyBatis3" defaultModelType="flat">
-        <!-- 配置SQL语句中的前置分隔符 -->
+        <!-- SQL 标识符前置分隔符（MySQL 用反引号） -->
         <property name="beginningDelimiter" value="`"/>
-        <!-- 配置SQL语句中的后置分隔符 -->
+        <!-- SQL 标识符后置分隔符 -->
         <property name="endingDelimiter" value="`"/>
-        <!-- 配置生成Java文件的编码 -->
+        <!-- 生成 Java 源文件编码 -->
         <property name="javaFileEncoding" value="UTF-8"/>
-        <!-- 为模型生成序列化方法 -->
+        <!-- 为实体类实现 Serializable -->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
-        <!-- 为生成的Java模型创建一个toString方法 -->
+        <!-- 为实体类生成 toString -->
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
-        <!-- 生成mapper.xml时覆盖原文件 -->
+        <!-- 生成 mapper.xml 时覆盖已有文件 -->
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
-        <commentGenerator type="com.macro.mall.CommentGenerator">
-            <!-- 是否阻止生成的注释 -->
+        <commentGenerator type="com.project.mall.CommentGenerator">
+            <!-- 不生成默认注释块 -->
             <property name="suppressAllComments" value="true"/>
-            <!-- 是否阻止生成的注释包含时间戳 -->
+            <!-- 注释中不包含时间戳 -->
             <property name="suppressDate" value="true"/>
-            <!-- 是否添加数据库表的备注信息 -->
+            <!-- 使用列备注生成 OpenAPI @Schema（见 CommentGenerator） -->
             <property name="addRemarkComments" value="true"/>
         </commentGenerator>
-        <!-- 配置MBG要连接的数据库信息 -->
+        <!-- JDBC 连接（账号见 generator.properties，勿提交真实密码到仓库） -->
         <jdbcConnection driverClass="${jdbc.driverClass}"
                         connectionURL="${jdbc.connectionURL}"
                         userId="${jdbc.userId}"
                         password="${jdbc.password}">
-            <!-- 解决mysql驱动升级到8.0后不生成指定数据库代码的问题 -->
+            <!-- 避免 MySQL 8+ 下生成到错误 catalog -->
             <property name="nullCatalogMeansCurrent" value="true" />
         </jdbcConnection>
-        <!-- 用于控制实体类的生成 -->
-        <javaModelGenerator targetPackage="com.macro.mall.model" targetProject="mall-mbg\src\main\java"/>
-        <!-- 用于控制Mapper.xml文件的生成 -->
-        <sqlMapGenerator targetPackage="com.macro.mall.mapper" targetProject="mall-mbg\src\main\resources"/>
-        <!-- 用于控制Mapper接口的生成 -->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.macro.mall.mapper"
-                             targetProject="mall-mbg\src\main\java"/>
-        <!-- 配置需要生成的表，生成全部表tableName设为% -->
+        <!-- 实体类输出目录（使用 / 以便在 Windows/Linux 下一致） -->
+        <javaModelGenerator targetPackage="com.project.mall.model" targetProject="mall-mbg/src/main/java"/>
+        <!-- Mapper XML 输出目录 -->
+        <sqlMapGenerator targetPackage="com.project.mall.mapper" targetProject="mall-mbg/src/main/resources"/>
+        <!-- Mapper 接口输出目录 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.project.mall.mapper"
+                             targetProject="mall-mbg/src/main/java"/>
+        <!-- tableName=% 表示当前库全部表 -->
         <table tableName="%">
-            <!-- 用来指定主键生成策略 -->
+            <!-- 主键自增 -->
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
     </context>

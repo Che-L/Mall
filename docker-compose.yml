@@ -1,0 +1,230 @@
+# Mall-System 一键全栈（中间件 + mall-admin / mall-portal / mall-search / mall-demo）
+#
+# 构建并后台启动全部服务：
+#   docker compose up -d --build
+#
+# 仅启动中间件（不启业务容器）：
+#   docker compose up -d mysql redis mongo rabbit es minio
+#
+# 使用宿主机或其它位置的 MySQL 时：先不要启动本文件的 mysql 服务（或停掉避免占 3306），
+# 并在启动前设置环境变量，例如：
+#   MALL_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+#   业务容器需能访问该地址（必要时自行添加 extra_hosts: host.docker.internal:host-gateway）。
+#
+# 端口一览：3306 MySQL | 6379 Redis | 27017 Mongo | 5672/15672 RabbitMQ | 9200 ES | 9000/9001 MinIO
+#           8080 admin | 8085 portal | 8081 search | 8082 demo
+#
+# 默认库账号与 application-prod 一致：reader / 123456（由 docker/mysql/init 初始化）
+# mall-portal 使用 SPRING_RABBITMQ_VIRTUAL_HOST=/ 与 Compose 内 Rabbit 默认 vhost 对齐
+# mall-search 如需 IK 分词，请换用自带插件的 ES 镜像
+
+name: mall-system
+
+x-mall-db-env: &mall-db-env
+  SPRING_DATASOURCE_URL: ${MALL_DATASOURCE_URL:-jdbc:mysql://db:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
+  SPRING_DATASOURCE_USERNAME: ${MALL_DATASOURCE_USERNAME:-reader}
+  SPRING_DATASOURCE_PASSWORD: ${MALL_DATASOURCE_PASSWORD:-123456}
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mall-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mall
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mall_mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+    networks:
+      mall-net:
+        aliases:
+          - db
+
+  redis:
+    image: redis:7-alpine
+    container_name: mall-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - mall-net
+
+  mongo:
+    image: mongo:7
+    container_name: mall-mongo
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - mall-net
+
+  rabbit:
+    image: rabbitmq:3.13-management-alpine
+    container_name: mall-rabbit
+    hostname: rabbit
+    environment:
+      RABBITMQ_DEFAULT_USER: mall
+      RABBITMQ_DEFAULT_PASS: mall
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    networks:
+      - mall-net
+
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: mall-es
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - mall_es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:9200 >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 90s
+    networks:
+      - mall-net
+
+  minio:
+    image: minio/minio:RELEASE.2024-09-22T00-33-43Z
+    container_name: mall-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - mall_minio_data:/data
+    networks:
+      - mall-net
+
+  mall-admin:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        MODULE: mall-admin
+    image: mall-admin:local
+    container_name: mall-admin
+    environment:
+      <<: *mall-db-env
+      SPRING_PROFILES_ACTIVE: prod
+      MINIO_ENDPOINT: http://minio:9000
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    networks:
+      - mall-net
+
+  mall-portal:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        MODULE: mall-portal
+    image: mall-portal:local
+    container_name: mall-portal
+    environment:
+      <<: *mall-db-env
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_RABBITMQ_VIRTUAL_HOST: /
+    ports:
+      - "8085:8085"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+    networks:
+      - mall-net
+
+  mall-search:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        MODULE: mall-search
+    image: mall-search:local
+    container_name: mall-search
+    environment:
+      <<: *mall-db-env
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      es:
+        condition: service_healthy
+    networks:
+      - mall-net
+
+  mall-demo:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        MODULE: mall-demo
+    image: mall-demo:local
+    container_name: mall-demo
+    environment:
+      <<: *mall-db-env
+    ports:
+      - "8082:8082"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - mall-net
+
+volumes:
+  mall_mysql_data:
+  mall_es_data:
+  mall_minio_data:
+
+networks:
+  mall-net:
+    driver: bridge
